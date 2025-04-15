@@ -37,10 +37,13 @@ public class SellingAPIService {
   private Map<String,String> market = new HashMap<>();
   private Map<String,String> product = new HashMap<>();
 
+
+  // 기본 정렬 : 날짜로
   public List<SellingDto> getAllList(){
     StringBuilder sb = new StringBuilder(url);
     sb.append("?serviceKey=").append(serviceKey);
     List<SellingDto> list = makeList(sb);
+    list.sort(Comparator.comparing(SellingDto::getScsbd_dt));
 
     for(SellingDto dto : list){
       market.put(dto.getWhsl_mrkt_nm(),dto.getWhsl_mrkt_cd());

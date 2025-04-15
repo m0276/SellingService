@@ -2,11 +2,13 @@ spring:
   application:
     name: sellingService
 
+  docker:
+    compose:
+      enabled: false
 
 
 end_point_current: ${END_POINT_CURRENT}
 curr_key: ${DECODING_KEY_CURRENT}
 
-db_name: ${DB_NAME}
-db_user: ${DB_USER}
-db_pass: ${DB_PASS}
+server:
+  port: 8080

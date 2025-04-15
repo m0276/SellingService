@@ -10,4 +10,6 @@ public class UserRequest {
 
   @Email
   String email;
+
+  Boolean favorite;
 }

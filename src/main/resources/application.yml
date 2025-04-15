@@ -4,7 +4,9 @@ spring:
 
 
 
-end_point_info: ${END_POINT_INFO}
 end_point_current: ${END_POINT_CURRENT}
-
 curr_key: ${DECODING_KEY_CURRENT}
+
+db_name: ${DB_NAME}
+db_user: ${DB_USER}
+db_pass: ${DB_PASS}

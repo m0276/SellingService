@@ -2,24 +2,20 @@ package MJ.sellingservice.service;
 
 
 import MJ.sellingservice.dto.SellingDto;
-import MJ.sellingservice.exception.NoCorrectUrlException;
+import MJ.sellingservice.exception.NoCorrectException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -37,43 +33,21 @@ public class SellingAPIService {
   private final RestTemplate restTemplate = new RestTemplate();
   private final ObjectMapper objectMapper = new ObjectMapper();
 
+  // 검색용
   private Map<String,String> market = new HashMap<>();
   private Map<String,String> product = new HashMap<>();
 
   public List<SellingDto> getAllList(){
     StringBuilder sb = new StringBuilder(url);
     sb.append("?serviceKey=").append(serviceKey);
-    try{
-      URI requestUrl = new URI(sb.toString());
+    List<SellingDto> list = makeList(sb);
 
-      ResponseEntity<String> response = restTemplate.getForEntity(requestUrl, String.class);
-
-      JsonNode root = objectMapper.readTree(response.getBody());
-
-      JsonNode itemArray = root
-          .path("response")
-          .path("body")
-          .path("items")
-          .path("item");
-
-      List<SellingDto> items = new ArrayList<>();
-
-      if (itemArray.isArray()) {
-        for (JsonNode itemNode : itemArray) {
-          SellingDto dto = objectMapper.treeToValue(itemNode, SellingDto.class);
-          market.put(dto.getWhsl_mrkt_nm(), dto.getWhsl_mrkt_cd());
-          product.put(dto.getGds_mclsf_nm(),dto.getGds_mclsf_nm());
-          items.add(dto);
-        }
-      }
-
-      return items;
-
-    } catch (URISyntaxException e) {
-      throw new NoCorrectUrlException("해당 경로가 정확하지 않습니다. 다시 확인 후 시도해 주세요.");
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException(e);
+    for(SellingDto dto : list){
+      market.put(dto.getWhsl_mrkt_nm(),dto.getWhsl_mrkt_cd());
+      product.put(dto.getGds_mclsf_nm(),dto.getGds_mclsf_cd());
     }
+
+    return list;
   }
 
   // 공판장 별 날짜로 정렬
@@ -93,5 +67,57 @@ public class SellingAPIService {
         .thenComparing(SellingDto::getGds_sclsf_cd));
 
     return list;
+  }
+
+  //검색 기능
+
+  //공판장으로 검색
+  public List<SellingDto> findWithMarket(String marketName){
+
+    if(market.keySet().stream().anyMatch(key -> key.matches(".*"+ Pattern.quote(marketName)+".*"))){
+      StringBuilder sb = new StringBuilder(url);
+      sb.append("?serviceKey=").append(serviceKey).append("&Whsl_mrkt_cd=").append(market.get(marketName));
+      return makeList(sb);
+    }
+    else throw new NoCorrectException(marketName+"에 해당하는 공판장을 찾을 수 없습니다.");
+  }
+
+  //물품별 검색
+  public List<SellingDto> findWithProduct(String productName){
+    if(product.keySet().stream().anyMatch(key -> key.matches(".*"+ Pattern.quote(productName)+".*"))){
+      StringBuilder sb = new StringBuilder(url);
+      sb.append("?serviceKey=").append(serviceKey).append("&Gds_mclsf_cd=").append(product.get(productName));
+      return makeList(sb);
+    }
+    else throw new NoCorrectException(productName+"에 해당하는 물품을 찾을 수 없습니다.");
+  }
+
+  private List<SellingDto> makeList(StringBuilder sb){
+    try {
+      URI requestUrl = new URI(sb.toString());
+
+      ResponseEntity<String> response = restTemplate.getForEntity(requestUrl, String.class);
+
+      JsonNode root = objectMapper.readTree(response.getBody());
+
+      JsonNode itemArray = root
+          .path("response")
+          .path("body")
+          .path("items")
+          .path("item");
+
+      List<SellingDto> items = new ArrayList<>();
+
+      if (itemArray.isArray()) {
+        for (JsonNode itemNode : itemArray) {
+          SellingDto dto = objectMapper.treeToValue(itemNode, SellingDto.class);
+          items.add(dto);
+        }
+      }
+
+      return items;
+    } catch (JsonProcessingException | URISyntaxException e) {
+      throw new NoCorrectException("조회에 실패하였습니다.");
+    }
   }
 }

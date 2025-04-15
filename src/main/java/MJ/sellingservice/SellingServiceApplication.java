@@ -7,7 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SellingServiceApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(SellingServiceApplication.class, args);
+    SpringApplication app = new SpringApplication(SellingServiceApplication.class);
+    app.setAdditionalProfiles("dev");
+    app.run(args);
   }
 
 }

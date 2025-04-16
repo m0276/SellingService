@@ -1,5 +1,6 @@
 package MJ.sellingservice.util;
 
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -8,13 +9,19 @@ import org.springframework.stereotype.Component;
 public class LoginUtil {
 
   public static boolean isLogin(){
-    boolean result = true;
+    var authentication = SecurityContextHolder.getContext().getAuthentication();
+    return authentication != null &&
+        authentication.isAuthenticated() &&
+        !(authentication instanceof AnonymousAuthenticationToken);
+  }
 
+  public static String getCurrentUserEmail() {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    if(principal instanceof String){
-      result = false;
+
+    if (principal instanceof org.springframework.security.core.userdetails.User userDetails) {
+      return userDetails.getUsername();
     }
 
-    return result;
+    throw new IllegalStateException("현재 로그인된 사용자가 없습니다.");
   }
 }

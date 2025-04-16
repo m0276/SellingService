@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/info")
+@RequestMapping("/api/infos")
 public class SellingAPIController {
 
   private final SellingAPIService sellingService;

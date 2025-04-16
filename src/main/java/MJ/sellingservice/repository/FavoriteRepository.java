@@ -13,4 +13,6 @@ import org.springframework.stereotype.Repository;
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
   Optional<Favorite> findByUserAndMarketCdAndProductCdAndTimeAndPrice(User user, String marketCd, String productCd, String time,
       String price);
+
+  List<Favorite> findByUser_Email(String userEmail);
 }

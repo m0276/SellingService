@@ -71,8 +71,12 @@ public class UserService implements CommonMethod<UserDto, UserRequest> {
     if(!LoginUtil.isLogin()) throw new HaveToLoginException("로그인이 필요합니다.");
     String email = LoginUtil.getCurrentUserEmail();
 
-    if(userRepository.findByEmail(email).isEmpty()) throw new NoJoinUserException("해당 하는 계정이 없습니다.");
+    if(userRepository.findByEmail(email).isEmpty()) throw new NoJoinUserException("해당하는 계정이 없습니다.");
 
     return userMapper.toDto(userRepository.findByEmail(email).get());
+  }
+
+  User findByUserEmail(String email){
+    return userRepository.findByEmail(email).orElseThrow(() -> new NoJoinUserException("해당하는 유저가 없습니다."));
   }
 }

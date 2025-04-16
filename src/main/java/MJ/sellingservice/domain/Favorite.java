@@ -20,11 +20,11 @@ public class Favorite {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
 
-  @Column
-  String market_cd;
+  @Column(name = "market_cd")
+  String marketCd;
 
-  @Column
-  String product_cd;
+  @Column(name = "product_cd")
+  String productCd;
 
   @Column
   String time;
@@ -36,8 +36,8 @@ public class Favorite {
   User user;
 
   public Favorite(String market_cd, String product_cd, String time, String price, User user) {
-    this.market_cd = market_cd;
-    this.product_cd = product_cd;
+    this.marketCd = market_cd;
+    this.productCd = product_cd;
     this.time = time;
     this.price = price;
     this.user = user;

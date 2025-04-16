@@ -1,8 +1,10 @@
 package MJ.sellingservice.controller;
 
+import MJ.sellingservice.dto.SellingDto;
 import MJ.sellingservice.dto.response.ErrorResponse;
 import MJ.sellingservice.service.SellingAPIService;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,57 +21,27 @@ public class SellingAPIController {
   private final SellingAPIService sellingService;
 
   @GetMapping
-  public ResponseEntity<?> getAllList(){
-    try{
+  public ResponseEntity<List<SellingDto>> getAllList(){
       return ResponseEntity.status(HttpStatus.OK).body(sellingService.getAllList());
-    }catch (Exception e){
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(
-          LocalDateTime.now(),e.getMessage()
-      ));
-    }
   }
 
   @GetMapping("/market")
-  public ResponseEntity<?> getAllListSortedByMarket(){
-    try{
+  public ResponseEntity<List<SellingDto>> getAllListSortedByMarket(){
       return ResponseEntity.status(HttpStatus.OK).body(sellingService.sortByMarket());
-    }catch (Exception e){
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(
-          LocalDateTime.now(),e.getMessage()
-      ));
-    }
   }
 
   @GetMapping("/product")
-  public ResponseEntity<?> getAllListSortedByProduct(){
-    try{
+  public ResponseEntity<List<SellingDto>> getAllListSortedByProduct(){
       return ResponseEntity.status(HttpStatus.OK).body(sellingService.sortByProduct());
-    }catch (Exception e){
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(
-          LocalDateTime.now(),e.getMessage()
-      ));
-    }
   }
 
   @GetMapping("/market/{marketName}")
-  public ResponseEntity<?> findWithMarketName(@PathVariable String marketName){
-    try{
+  public ResponseEntity<List<SellingDto>> findWithMarketName(@PathVariable String marketName){
       return ResponseEntity.status(HttpStatus.OK).body(sellingService.findWithMarket(marketName));
-    }catch (Exception e){
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(
-          LocalDateTime.now(),e.getMessage()
-      ));
-    }
   }
 
   @GetMapping("/product/{productName}")
-  public ResponseEntity<?> findWithProductName(@PathVariable String productName){
-    try{
+  public ResponseEntity<List<SellingDto>> findWithProductName(@PathVariable String productName){
       return ResponseEntity.status(HttpStatus.OK).body(sellingService.findWithProduct(productName));
-    }catch (Exception e){
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(
-          LocalDateTime.now(),e.getMessage()
-      ));
-    }
   }
 }

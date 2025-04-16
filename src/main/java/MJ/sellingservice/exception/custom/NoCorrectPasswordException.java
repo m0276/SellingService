@@ -1,4 +1,4 @@
-package MJ.sellingservice.exception;
+package MJ.sellingservice.exception.custom;
 
 public class NoCorrectPasswordException extends RuntimeException {
 

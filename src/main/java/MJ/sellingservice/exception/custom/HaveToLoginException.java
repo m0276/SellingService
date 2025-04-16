@@ -1,4 +1,4 @@
-package MJ.sellingservice.exception;
+package MJ.sellingservice.exception.custom;
 
 public class HaveToLoginException extends RuntimeException {
 

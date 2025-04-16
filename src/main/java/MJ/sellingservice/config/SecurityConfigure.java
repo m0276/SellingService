@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -31,13 +32,14 @@ public class SecurityConfigure {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http	.csrf(AbstractHttpConfigurer::disable)
         .httpBasic(AbstractHttpConfigurer::disable)
-        .formLogin(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests((authorize) -> authorize
-            .requestMatchers("/signup", "/", "/api/users/join","/api/infos/**").permitAll()
+            .requestMatchers("/", "/api/users/join","/api/infos/**").permitAll()
             .anyRequest().authenticated())
+        .formLogin(Customizer.withDefaults())
         .logout((logout) -> logout
-            .logoutSuccessUrl("/login")
-            .invalidateHttpSession(true))
+            .logoutSuccessUrl("/login?logout")
+            .invalidateHttpSession(true)
+            .deleteCookies("JSESSIONID"))
         .securityContext(securityContext -> securityContext
             .securityContextRepository(new HttpSessionSecurityContextRepository())
         );

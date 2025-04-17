@@ -3,7 +3,6 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/selling_db?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
     username: selling_user
     password: 12341234
-    name: selling_db
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 

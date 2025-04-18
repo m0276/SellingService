@@ -15,6 +15,7 @@ import MJ.sellingservice.util.LoginUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -72,4 +73,22 @@ class FavoriteServiceTest {
       verify(favoriteRepository, never()).delete(any(Favorite.class));
     }
   }
+
+  @Test
+  void checkAndSave_shouldDelete() {
+    try (MockedStatic<LoginUtil> mockedLoginUtil = mockStatic(LoginUtil.class)) {
+      mockedLoginUtil.when(LoginUtil::isLogin).thenReturn(true);
+      mockedLoginUtil.when(LoginUtil::getCurrentUserEmail).thenReturn("test@example.com");
+
+      User mockUser = mock(User.class);
+      when(userService.findByUserEmail("test@example.com")).thenReturn(mockUser);
+
+      // 테스트 대상
+      FavoriteDto favoriteDto = new FavoriteDto();
+      favoriteDto.setFavorite(false);
+
+      assertThrows(NoSuchElementException.class,() -> favoriteService.checkAndSave(favoriteDto),"해당하는 즐겨찾기를 찾을 수 없습니다.");
+    }
+  }
+
 }

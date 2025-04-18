@@ -33,7 +33,13 @@ public class SecurityConfigure {
     http	.csrf(AbstractHttpConfigurer::disable)
         .httpBasic(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests((authorize) -> authorize
-            .requestMatchers("/", "/api/users/join","/api/infos/**").permitAll()
+            .requestMatchers("/",
+                "/api/users/join",
+                "/api/infos/**",
+                "/css/**",
+                "/js/**",
+                "/images/**",
+                "/favicon.ico").permitAll()
             .anyRequest().authenticated())
         .formLogin(Customizer.withDefaults())
         .logout((logout) -> logout

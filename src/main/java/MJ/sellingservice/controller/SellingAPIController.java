@@ -20,12 +20,12 @@ public class SellingAPIController {
 
   private final SellingAPIService sellingService;
 
-  @GetMapping
+  @GetMapping( produces = "application/json")
   public ResponseEntity<List<SellingDto>> getAllList(){
       return ResponseEntity.status(HttpStatus.OK).body(sellingService.getAllList());
   }
 
-  @GetMapping("/market")
+  @GetMapping(value = "/market", produces = "application/json")
   public ResponseEntity<List<SellingDto>> getAllListSortedByMarket(){
       return ResponseEntity.status(HttpStatus.OK).body(sellingService.sortByMarket());
   }

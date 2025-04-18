@@ -8,7 +8,7 @@ spring:
 
 
 end_point_current: ${END_POINT_CURRENT}
-curr_key: ${DECODING_KEY_CURRENT}
+curr_key: ${ENCODING_KEY_CURRENT}
 
 server:
   port: 8080

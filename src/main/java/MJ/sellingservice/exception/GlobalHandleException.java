@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class GlobalHandleException extends RuntimeException {
+public class GlobalHandleException {
   @ExceptionHandler({
       NoSuchElementException.class,
       NoCorrectException.class,

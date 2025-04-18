@@ -41,7 +41,8 @@ public class SellingAPIService {
   // 기본 정렬 : 날짜로
   public List<SellingDto> getAllList(){
     StringBuilder sb = new StringBuilder(url);
-    sb.append("?serviceKey=").append(serviceKey);
+    sb.append("?serviceKey=").append(serviceKey)
+        .append("&numOfRows=1000");
     List<SellingDto> list = makeList(sb);
     list.sort(Comparator.comparing(SellingDto::getScsbd_dt));
 
@@ -79,7 +80,9 @@ public class SellingAPIService {
 
     if(market.keySet().stream().anyMatch(key -> key.matches(".*"+ Pattern.quote(marketName)+".*"))){
       StringBuilder sb = new StringBuilder(url);
-      sb.append("?serviceKey=").append(serviceKey).append("&Whsl_mrkt_cd=").append(market.get(marketName));
+      sb.append("?serviceKey=").append(serviceKey)
+          .append("&numOfRows=1000")
+          .append("&cond[whsl_mrkt_cd::EQ]=").append(market.get(marketName));
       return makeList(sb);
     }
     else throw new NoCorrectException(marketName+"에 해당하는 공판장을 찾을 수 없습니다.");
@@ -89,7 +92,9 @@ public class SellingAPIService {
   public List<SellingDto> findWithProduct(String productName){
     if(product.keySet().stream().anyMatch(key -> key.matches(".*"+ Pattern.quote(productName)+".*"))){
       StringBuilder sb = new StringBuilder(url);
-      sb.append("?serviceKey=").append(serviceKey).append("&Gds_mclsf_cd=").append(product.get(productName));
+      sb.append("?serviceKey=").append(serviceKey)
+          .append("&numOfRows=1000")
+          .append("&cond[gds_mclsf_cd::EQ]=").append(product.get(productName));
       return makeList(sb);
     }
     else throw new NoCorrectException(productName+"에 해당하는 물품을 찾을 수 없습니다.");
@@ -120,6 +125,7 @@ public class SellingAPIService {
 
       return items;
     } catch (JsonProcessingException | URISyntaxException e) {
+      e.printStackTrace();
       throw new NoCorrectException("조회에 실패하였습니다.");
     }
   }

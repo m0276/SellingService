@@ -1,12 +1,14 @@
 package MJ.sellingservice.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SellingDto {
   String corp_cd; // 법인
   String corp_gds_cd;

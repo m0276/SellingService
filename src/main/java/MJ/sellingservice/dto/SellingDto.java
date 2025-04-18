@@ -2,8 +2,11 @@ package MJ.sellingservice.dto;
 
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class SellingDto {
   String corp_cd; // 법인
   String corp_gds_cd;

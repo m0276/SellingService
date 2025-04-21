@@ -46,7 +46,6 @@ public class UserService implements CommonMethod<UserDto, UserRequest> {
     User user = userRepository.findByEmail(email).get();
     user.setPassword(encoder.encode(request.getPassword()));
 
-    userRepository.save(user);
     return userMapper.toDto(user);
   }
 

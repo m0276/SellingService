@@ -18,15 +18,29 @@ public class NaverAPIService {
   @Value("${client_id}")
   String clientId;
 
+  @Value("${client_secret}")
+  String clientSecret;
+
   @Value("${naver_redirect}")
   String endUrl;
 
-  public NaverDto getUserInfo(){
-    StringBuilder str = new StringBuilder(startUrl);
-    str.append("response_type=code&client_id='").append(clientId)
-        .append("'&redirect_uri='").append(endUrl)
-        .append("'&state=1234'");
-    return null;
+  @Value("${naver_request_token_url}")
+  String token;
+
+  public String makeLoginURL(String state){
+    return startUrl
+        + "&client_id=" + clientId
+        + "&redirect_uri=" + endUrl
+        + "&state=" + state;
+  }
+
+  public String getToken(String code, String state){
+
+    return token
+        + "&client_id=" + clientId
+        + "&client_secret=" + clientSecret
+        + "&code=" + code
+        + "&state=" + state;
   }
 
 }

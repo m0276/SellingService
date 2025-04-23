@@ -20,4 +20,4 @@ naver_request_url: ${NAVER_REQUEST_URL}
 naver_request_info_url: ${NAVER_REQUEST_INFO_URL}
 naver_request_token_url: ${NAVER_TOKEN_REQUEST_URL}
 
-naver_redirect: http://localhost:8080/api/infos
+naver_redirect: ${NAVER_CALL_BACK_URL}

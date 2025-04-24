@@ -11,7 +11,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FavoriteDto {
-  Boolean favorite;
   String market_cd;
   String product_cd;
   String trd_clcln_ymd;

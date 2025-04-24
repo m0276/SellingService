@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원 정보 수정</title>
+</head>
+<body>
+
+<h1>비밀번호 변경</h1>
+
+<form id="updateForm">
+  <div>
+    <label for="password">변경할 비밀번호</label>
+    <input type="password" id="password" name="password" />
+  </div>
+
+  <button type="submit">수정하기</button>
+</form>
+
+<p id="response-message" style="color: green;"></p>
+
+<script>
+  document.getElementById('updateForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // 기본 폼 제출을 막음
+
+    const formData = {
+      password: document.getElementById('password').value
+    };
+
+    fetch('/api/users/me', {  // 회원 정보 수정 API 경로
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data) {
+        document.getElementById('response-message').textContent = '회원 정보가 성공적으로 수정되었습니다.';
+        document.getElementById('response-message').style.color = 'green';
+      } else {
+        document.getElementById('response-message').textContent = '회원 정보 수정에 실패했습니다.';
+        document.getElementById('response-message').style.color = 'red';
+      }
+    })
+    .catch(error => {
+      console.error('회원 정보 수정 오류', error);
+      document.getElementById('response-message').textContent = '서버 오류 발생!';
+      document.getElementById('response-message').style.color = 'red';
+    });
+  });
+</script>
+
+</body>
+</html>

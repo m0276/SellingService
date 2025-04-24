@@ -1,5 +1,7 @@
 package MJ.sellingservice.service;
 
+import static org.apache.logging.log4j.ThreadContext.isEmpty;
+
 import MJ.sellingservice.domain.Favorite;
 import MJ.sellingservice.domain.User;
 import MJ.sellingservice.dto.FavoriteDto;
@@ -44,7 +46,9 @@ public class FavoriteService {
     User user = userService.findByUserEmail(email);
 
     try {
-      if (favoriteDto.getFavorite()) {
+      if (favoriteRepository.findByUserAndMarketCdAndProductCdAndTimeAndPrice(user,
+          favoriteDto.getMarket_cd(), favoriteDto.getProduct_cd(), favoriteDto.getTrd_clcln_ymd(),
+          favoriteDto.getScsbd_prc()).isEmpty()){
         save(favoriteDto, user);
       } else {
         delete(favoriteDto, user);

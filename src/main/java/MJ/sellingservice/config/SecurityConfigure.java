@@ -34,6 +34,7 @@ public class SecurityConfigure {
         .httpBasic(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests((authorize) -> authorize
             .requestMatchers("/",
+                "/signup",
                 "/api/users/join",
                 "/api/infos/**",
                 "/oauth/naver/**",

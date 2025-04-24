@@ -27,32 +27,34 @@
 <div class="section">
   <h2>👤 사용자</h2>
   <button onclick="navigate('/api/users/me')">내 정보</button>
-  <button onclick="navigate('/api/users/join', 'POST')">회원가입</button>
-  <button onclick="navigate('/api/users/me', 'PATCH')">회원 정보 수정</button>
-  <button onclick="navigate('/api/users/me', 'DELETE')">회원 삭제</button>
+  <button onclick="location.href='/signup'">회원가입</button>
+  <button onclick="window.location.href='/login'">로그인</button>
+  <button onclick="location.href='/update'">회원 정보 수정</button>
+  <button id="deleteUserBtn">회원 탈퇴</button>
 </div>
 
 <div class="section">
   <h2>⭐ 즐겨찾기</h2>
   <button onclick="navigate('/api/favorites')">즐겨찾기 목록</button>
-  <button onclick="navigate('/api/favorites', 'PATCH')">즐겨찾기 수정</button>
 </div>
 
 <div class="section">
   <h2>📦 판매 정보</h2>
-  <button onclick="navigate('/api/infos')">전체 판매 목록</button>
+  <button onclick="loadAllSales()">전체 판매 목록</button>
 
   <div>
-    <button onclick="navigate('/api/infos/market')">마켓 기준 정렬</button><br>
+    <h3>🔍 마켓 기준 정렬</h3>
     <input type="text" id="marketInput" placeholder="마켓 이름 입력" />
-    <button onclick="searchMarket()">🔍 마켓 이름으로 검색</button>
+    <button onclick="searchMarket()">검색</button>
   </div>
 
   <div>
-    <button onclick="navigate('/api/infos/product')">상품 기준 정렬</button><br>
+    <h3>🔍 상품 기준 정렬</h3>
     <input type="text" id="productInput" placeholder="상품 이름 입력" />
-    <button onclick="searchProduct()">🔍 상품 이름으로 검색</button>
+    <button onclick="searchProduct()">검색</button>
   </div>
+
+  <ul id="itemList"></ul>
 </div>
 
 <div class="section">
@@ -67,9 +69,7 @@
     } else {
       fetch(url, {
         method: method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({})
       })
       .then(res => alert(`${method} ${url} → 상태: ${res.status}`))
@@ -77,21 +77,88 @@
     }
   }
 
-  function searchMarket() {
-    const market = document.getElementById("marketInput").value.trim();
-    if (market) {
-      navigate(`/api/infos/market/${encodeURIComponent(market)}`);
-    } else {
-      alert("마켓 이름을 입력해주세요!");
+  async function toggleFavorite(item, buttonElement) {
+    const favoriteDto = {
+      product_cd: item.spm_no,
+      market_cd: item.whsl_mrkt_cd,
+      trd_clcln_ymd: item.trd_clcln_ymd,
+      scsbd_prc: item.scsbd_prc
+    };
+
+    try {
+      const res = await fetch('/api/favorites', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(favoriteDto)
+      });
+
+      if (!res.ok) throw new Error("즐겨찾기 업데이트 실패");
+
+      // 현재 버튼 텍스트를 기준으로 반대 텍스트로 토글
+      const isCurrentlyFavorited = buttonElement.innerText.includes('취소');
+      buttonElement.innerText = isCurrentlyFavorited ? '⭐ 즐겨찾기' : '⭐ 즐겨찾기 취소';
+
+      alert(isCurrentlyFavorited ? "즐겨찾기가 해제되었습니다." : "즐겨찾기가 완료되었습니다.");
+    } catch (err) {
+      console.error('즐겨찾기 처리 오류:', err);
+      alert("오류가 발생했습니다. 다시 시도해 주세요.");
     }
   }
 
-  function searchProduct() {
-    const product = document.getElementById("productInput").value.trim();
-    if (product) {
-      navigate(`/api/infos/product/${encodeURIComponent(product)}`);
-    } else {
-      alert("상품 이름을 입력해주세요!");
+  function renderItems(items) {
+    const list = document.getElementById("itemList");
+    list.innerHTML = "";
+
+    items.forEach((item) => {
+      const li = document.createElement("li");
+      li.id = `item-${item.product_cd}`;
+
+      li.innerHTML = `
+        <strong>${item.whsl_mrkt_nm}</strong> - ${item.corp_gds_item_nm} / ${item.pkg_nm} (${item.scsbd_prc}원)
+        <br>📅 낙찰일: ${item.scsbd_dt} | 정산일: ${item.trd_clcln_ymd}
+        <br>
+        <button onclick='toggleFavorite(${JSON.stringify(item)}, this)'>⭐ 즐겨찾기</button>
+      `;
+
+      list.appendChild(li);
+    });
+  }
+
+  async function loadAllSales() {
+    try {
+      const res = await fetch('/api/infos');
+      const data = await res.json();
+      renderItems(data);
+    } catch (err) {
+      console.error("전체 판매 목록 불러오기 실패", err);
+    }
+  }
+
+  async function searchMarket() {
+    const market = document.getElementById("marketInput").value;
+    if (!market) return alert("마켓 이름을 입력하세요.");
+
+    try {
+      const res = await fetch(`/api/infos/market/${market}`);
+      const data = await res.json();
+      renderItems(data);
+    } catch (err) {
+      console.error("마켓 검색 실패:", err);
+      alert("검색 중 오류 발생");
+    }
+  }
+
+  async function searchProduct() {
+    const product = document.getElementById("productInput").value;
+    if (!product) return alert("상품 이름을 입력하세요.");
+
+    try {
+      const res = await fetch(`/api/infos/product/${product}`);
+      const data = await res.json();
+      renderItems(data);
+    } catch (err) {
+      console.error("상품 검색 실패:", err);
+      alert("검색 중 오류 발생");
     }
   }
 
@@ -99,6 +166,29 @@
     const state = 'custom_state_value';
     window.location.href = `/oauth/naver?state=${state}`;
   }
+
+  document.getElementById("deleteUserBtn").addEventListener("click", async () => {
+    const password = prompt("비밀번호를 입력해주세요:");
+    if (!password) return alert("비밀번호를 입력해야 탈퇴할 수 있습니다.");
+
+    try {
+      const res = await fetch("/api/users/me", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password })
+      });
+
+      if (res.status === 204) {
+        alert("회원 탈퇴가 완료되었습니다.");
+        window.location.href = "/";
+      } else {
+        alert("탈퇴 실패! 비밀번호를 다시 확인해주세요.");
+      }
+    } catch (err) {
+      console.error("회원 탈퇴 오류:", err);
+      alert("탈퇴 요청 중 오류 발생");
+    }
+  });
 </script>
 </body>
 </html>

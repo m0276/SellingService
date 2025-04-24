@@ -11,4 +11,14 @@ public class HomeController {
   public String home() {
     return "home";
   }
+
+  @GetMapping("/signup")
+  public String signupForm() {
+    return "signup";
+  }
+
+  @GetMapping("/update")
+  public String updateFrom() {
+    return "update";
+  }
 }

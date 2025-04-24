@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Selling Service Client</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    button, input {
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+    }
+    input {
+      width: 300px;
+    }
+    .section {
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+<h1>🔗 API 테스트</h1>
+
+<div class="section">
+  <h2>👤 사용자</h2>
+  <button onclick="navigate('/api/users/me')">내 정보</button>
+  <button onclick="navigate('/api/users/join', 'POST')">회원가입</button>
+  <button onclick="navigate('/api/users/me', 'PATCH')">회원 정보 수정</button>
+  <button onclick="navigate('/api/users/me', 'DELETE')">회원 삭제</button>
+</div>
+
+<div class="section">
+  <h2>⭐ 즐겨찾기</h2>
+  <button onclick="navigate('/api/favorites')">즐겨찾기 목록</button>
+  <button onclick="navigate('/api/favorites', 'PATCH')">즐겨찾기 수정</button>
+</div>
+
+<div class="section">
+  <h2>📦 판매 정보</h2>
+  <button onclick="navigate('/api/infos')">전체 판매 목록</button>
+
+  <div>
+    <button onclick="navigate('/api/infos/market')">마켓 기준 정렬</button><br>
+    <input type="text" id="marketInput" placeholder="마켓 이름 입력" />
+    <button onclick="searchMarket()">🔍 마켓 이름으로 검색</button>
+  </div>
+
+  <div>
+    <button onclick="navigate('/api/infos/product')">상품 기준 정렬</button><br>
+    <input type="text" id="productInput" placeholder="상품 이름 입력" />
+    <button onclick="searchProduct()">🔍 상품 이름으로 검색</button>
+  </div>
+</div>
+
+<div class="section">
+  <h2>🟢 네이버 로그인</h2>
+  <button onclick="navigateToNaverLogin()">네이버 로그인 시작</button>
+</div>
+
+<script>
+  function navigate(url, method = 'GET') {
+    if (method === 'GET') {
+      window.open(url, '_blank');
+    } else {
+      fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+      })
+      .then(res => alert(`${method} ${url} → 상태: ${res.status}`))
+      .catch(err => console.error(err));
+    }
+  }
+
+  function searchMarket() {
+    const market = document.getElementById("marketInput").value.trim();
+    if (market) {
+      navigate(`/api/infos/market/${encodeURIComponent(market)}`);
+    } else {
+      alert("마켓 이름을 입력해주세요!");
+    }
+  }
+
+  function searchProduct() {
+    const product = document.getElementById("productInput").value.trim();
+    if (product) {
+      navigate(`/api/infos/product/${encodeURIComponent(product)}`);
+    } else {
+      alert("상품 이름을 입력해주세요!");
+    }
+  }
+
+  function navigateToNaverLogin() {
+    const state = 'custom_state_value';
+    window.location.href = `/oauth/naver?state=${state}`;
+  }
+</script>
+</body>
+</html>

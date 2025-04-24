@@ -37,7 +37,7 @@ class FavoriteServiceTest {
   private UserMapper userMapper;
 
   @InjectMocks
-  private FavoriteService favoriteService; // 진짜 객체 + mock 주입됨
+  private FavoriteService favoriteService;
 
 
 
@@ -64,7 +64,6 @@ class FavoriteServiceTest {
       User mockUser = mock(User.class);
       when(userService.findByUserEmail("test@example.com")).thenReturn(mockUser);
 
-      // 테스트 대상
       FavoriteDto favoriteDto = new FavoriteDto();
       favoriteDto.setFavorite(true);
       favoriteService.checkAndSave(favoriteDto);
@@ -83,7 +82,6 @@ class FavoriteServiceTest {
       User mockUser = mock(User.class);
       when(userService.findByUserEmail("test@example.com")).thenReturn(mockUser);
 
-      // 테스트 대상
       FavoriteDto favoriteDto = new FavoriteDto();
       favoriteDto.setFavorite(false);
 

@@ -36,6 +36,7 @@ public class SecurityConfigure {
             .requestMatchers("/",
                 "/api/users/join",
                 "/api/infos/**",
+                "/oauth/naver/**",
                 "/css/**",
                 "/js/**",
                 "/images/**",

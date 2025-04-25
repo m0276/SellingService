@@ -1,6 +1,5 @@
 package MJ.sellingservice.service;
 
-import MJ.sellingservice.dto.NaverDto;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +28,7 @@ public class NaverAPIService {
 
   public String makeLoginURL(String state){
     return startUrl
+        + "?response_type=code"
         + "&client_id=" + clientId
         + "&redirect_uri=" + endUrl
         + "&state=" + state;
@@ -37,6 +37,7 @@ public class NaverAPIService {
   public String getToken(String code, String state){
 
     return token
+        + "?response_type=code"
         + "&client_id=" + clientId
         + "&client_secret=" + clientSecret
         + "&code=" + code

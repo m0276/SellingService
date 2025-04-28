@@ -37,7 +37,7 @@ public class NaverAPIService {
   public String getToken(String code, String state){
 
     return token
-        + "?response_type=code"
+        + "?grant_type=authorization_code"
         + "&client_id=" + clientId
         + "&client_secret=" + clientSecret
         + "&code=" + code

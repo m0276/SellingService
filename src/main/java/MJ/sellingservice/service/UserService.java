@@ -2,6 +2,7 @@ package MJ.sellingservice.service;
 
 
 import MJ.sellingservice.domain.User;
+import MJ.sellingservice.dto.NaverUserInfo;
 import MJ.sellingservice.dto.UserDto;
 import MJ.sellingservice.dto.request.UserRequest;
 import MJ.sellingservice.exception.custom.AlreadyJoinException;
@@ -12,10 +13,20 @@ import MJ.sellingservice.mapper.UserMapper;
 import MJ.sellingservice.repository.UserRepository;
 import MJ.sellingservice.service.common.CommonMethod;
 import MJ.sellingservice.util.LoginUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional
@@ -77,5 +88,59 @@ public class UserService implements CommonMethod<UserDto, UserRequest> {
 
   User findByUserEmail(String email){
     return userRepository.findByEmail(email).orElseThrow(() -> new NoJoinUserException("해당하는 유저가 없습니다."));
+  }
+
+  private final RestTemplate restTemplate = new RestTemplate(); // 또는 @Bean으로 등록
+  private final ObjectMapper objectMapper = new ObjectMapper();
+
+  public NaverUserInfo getUserInfo(String accessToken) {
+    String url = "https://openapi.naver.com/v1/nid/me";
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setBearerAuth(accessToken);
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+    HttpEntity<String> entity = new HttpEntity<>("", headers);
+
+    ResponseEntity<String> response = restTemplate.exchange(
+        url,
+        HttpMethod.GET,
+        entity,
+        String.class
+    );
+
+    try {
+      JsonNode jsonNode = objectMapper.readTree(response.getBody());
+      JsonNode responseNode = jsonNode.get("response");
+
+      return NaverUserInfo.builder()
+          .id(responseNode.get("id").asText())
+          .email(responseNode.get("email").asText(null))
+          .name(responseNode.get("name").asText(null))
+          .build();
+
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to parse user info from Naver", e);
+    }
+  }
+
+  public User saveOrUpdateNaverUser(NaverUserInfo userInfo) {
+    Optional<User> existing = userRepository.findByProviderAndProviderId("naver", userInfo.getId());
+
+    if (existing.isPresent()) {
+      return existing.get();
+    }
+
+
+    return existing
+        .orElseGet(() -> {
+          User newUser = new User();
+          newUser.setEmail(userInfo.getEmail());
+          newUser.setPassword("naverUser");
+          newUser.setUsername(userInfo.getName());
+          newUser.setProvider("naver");
+          newUser.setProviderId(userInfo.getId());
+          return userRepository.save(newUser);
+        });
   }
 }

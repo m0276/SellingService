@@ -60,8 +60,4 @@ public class SecurityConfigure {
     return new BCryptPasswordEncoder();
   }
 
-  @Bean
-  public SecurityContextHolder securityContext(){
-    return new SecurityContextHolder();
-  }
 }

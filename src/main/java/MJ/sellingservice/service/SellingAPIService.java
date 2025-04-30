@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -77,13 +78,24 @@ public class SellingAPIService {
 
   //공판장으로 검색
   public List<SellingDto> findWithMarket(String marketName){
+    List<SellingDto> result = new ArrayList<>();
 
     if(market.keySet().stream().anyMatch(key -> key.matches(".*"+ Pattern.quote(marketName)+".*"))){
       StringBuilder sb = new StringBuilder(url);
       sb.append("?serviceKey=").append(serviceKey)
           .append("&numOfRows=1000")
-          .append("&cond[whsl_mrkt_cd::EQ]=").append(market.get(marketName));
-      return makeList(sb);
+          .append("&cond[whsl_mrkt_cd::EQ]=");
+
+      List<String> matchingKeys = market.keySet().stream()
+          .filter(key -> key.matches(".*" + Pattern.quote(marketName) + ".*"))
+          .toList();
+      for (String s : matchingKeys){
+        StringBuilder str = new StringBuilder(sb);
+        str.append(s);
+        result.addAll(makeList(str));
+      }
+
+      return result;
     }
     else throw new NoCorrectException(marketName+"에 해당하는 공판장을 찾을 수 없습니다.");
   }

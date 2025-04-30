@@ -65,7 +65,6 @@ class FavoriteServiceTest {
       when(userService.findByUserEmail("test@example.com")).thenReturn(mockUser);
 
       FavoriteDto favoriteDto = new FavoriteDto();
-      favoriteDto.setFavorite(true);
       favoriteService.checkAndSave(favoriteDto);
 
       verify(favoriteRepository).save(any(Favorite.class));
@@ -83,7 +82,17 @@ class FavoriteServiceTest {
       when(userService.findByUserEmail("test@example.com")).thenReturn(mockUser);
 
       FavoriteDto favoriteDto = new FavoriteDto();
-      favoriteDto.setFavorite(false);
+      favoriteDto.setUser(mockUser);
+      favoriteDto.setMarket_cd("cd");
+      favoriteDto.setProduct_cd("cd");
+      favoriteDto.setTrd_clcln_ymd("now");
+      favoriteDto.setScsbd_prc("100");
+
+      Favorite mockFavorite = mock(Favorite.class);
+
+      when(favoriteRepository.findByUserAndMarketCdAndProductCdAndTimeAndPrice(mockUser, "cd", "cd", "now", "100"))
+          .thenReturn(Optional.of(mockFavorite))
+          .thenReturn(Optional.empty());
 
       assertThrows(NoSuchElementException.class,() -> favoriteService.checkAndSave(favoriteDto),"해당하는 즐겨찾기를 찾을 수 없습니다.");
     }

@@ -16,4 +16,15 @@ public class FavoriteDto {
   String trd_clcln_ymd;
   String scsbd_prc;
   User user;
+
+  @Override
+  public String toString() {
+    return "FavoriteDto{" +
+        "market_cd='" + market_cd + '\'' +
+        ", product_cd='" + product_cd + '\'' +
+        ", trd_clcln_ymd='" + trd_clcln_ymd + '\'' +
+        ", scsbd_prc='" + scsbd_prc + '\'' +
+        ", user=" + user.getUsername() +
+        '}';
+  }
 }

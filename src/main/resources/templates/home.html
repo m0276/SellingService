@@ -139,7 +139,7 @@
     if (!market) return alert("마켓 이름을 입력하세요.");
 
     try {
-      const res = await fetch(`/api/infos/market/${market}`);
+      const res = await fetch(`/api/infos/market/${encodeURIComponent(market)}`);
       const data = await res.json();
       renderItems(data);
     } catch (err) {
@@ -153,7 +153,7 @@
     if (!product) return alert("상품 이름을 입력하세요.");
 
     try {
-      const res = await fetch(`/api/infos/product/${product}`);
+      const res = await fetch(`/api/infos/product/${encodeURIComponent(product)}`);
       const data = await res.json();
       renderItems(data);
     } catch (err) {

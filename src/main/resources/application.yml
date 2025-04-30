@@ -1,10 +1,17 @@
 spring:
   application:
     name: sellingService
+  profiles:
+    active: "prod"
 
-  docker:
-    compose:
-      enabled: false
+  #  docker:
+#    compose:
+#      enabled: false
+  datasource:
+    url: jdbc:mysql://mysql:3306/selling_db?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    username: selling_user
+    password: 12341234
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
 
 end_point_current: ${END_POINT_CURRENT}

@@ -8,7 +8,7 @@ public class SellingServiceApplication {
 
   public static void main(String[] args) {
     SpringApplication app = new SpringApplication(SellingServiceApplication.class);
-    app.setAdditionalProfiles("dev");
+    //app.setAdditionalProfiles("dev");
     app.run(args);
   }
 

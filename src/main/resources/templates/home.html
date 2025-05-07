@@ -22,15 +22,22 @@
   </style>
 </head>
 <body>
-<h1>🔗 API 테스트</h1>
+<h1> Selling Service </h1>
 
 <div class="section">
   <h2>👤 사용자</h2>
-  <button onclick="navigate('/api/users/me')">내 정보</button>
-  <button onclick="location.href='/signup'">회원가입</button>
-  <button onclick="window.location.href='/login'">로그인</button>
-  <button onclick="location.href='/update'">회원 정보 수정</button>
-  <button id="deleteUserBtn">회원 탈퇴</button>
+  <div style="display: flex; gap: 8px; align-items: center;">
+    <button onclick="navigate('/api/users/me')">내 정보</button>
+    <button onclick="location.href='/signup'">회원가입</button>
+    <button onclick="window.location.href='/login'">로그인</button>
+    <button onclick="location.href='/update'">회원 정보 수정</button>
+
+    <form action="/logout" method="POST" style="margin: 0;">
+      <button type="submit">로그아웃</button>
+    </form>
+
+    <button id="deleteUserBtn">회원 탈퇴</button>
+  </div>
 </div>
 
 <div class="section">

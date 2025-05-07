@@ -1,61 +1,27 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="ko">-->
-<!--<head>-->
-<!--  <meta charset="UTF-8">-->
-<!--  <title>회원가입</title>-->
-<!--</head>-->
-<!--<body>-->
-<!--<h1>회원가입</h1>-->
-<!--<form id="signup-form">-->
-<!--  <label for="username">아이디:</label>-->
-<!--  <input type="text" id="username" name="username" required /><br><br>-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>회원 가입</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    button, input {
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+    }
+    input {
+      width: 300px;
+    }
+    .section {
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
 
-<!--  <label for="password">비밀번호:</label>-->
-<!--  <input type="password" id="password" name="password" required /><br><br>-->
-
-<!--  <button type="submit">가입하기</button>-->
-<!--</form>-->
-
-<!--<p id="response-message" style="color:green;"></p>-->
-
-<!--<script>-->
-<!--  const form = document.getElementById("signup-form");-->
-<!--  const responseMessage = document.getElementById("response-message");-->
-
-<!--  form.addEventListener("submit", async (e) => {-->
-<!--    e.preventDefault();-->
-
-<!--    const username = document.getElementById("username").value;-->
-<!--    const password = document.getElementById("password").value;-->
-
-<!--    try {-->
-<!--      const res = await fetch("/api/users/join", {-->
-<!--        method: "POST",-->
-<!--        headers: {-->
-<!--          "Content-Type": "application/json"-->
-<!--        },-->
-<!--        body: JSON.stringify({ username, password })-->
-<!--      });-->
-
-<!--      if (res.ok) {-->
-<!--        const data = await res.json();-->
-<!--        responseMessage.textContent = `회원가입 성공! 환영합니다, ${data.username}`;-->
-<!--      } else {-->
-<!--        responseMessage.style.color = "red";-->
-<!--        responseMessage.textContent = "회원가입 실패. 입력값을 확인해주세요.";-->
-<!--      }-->
-<!--    } catch (err) {-->
-<!--      console.error("회원가입 오류:", err);-->
-<!--      responseMessage.style.color = "red";-->
-<!--      responseMessage.textContent = "서버 오류 발생!";-->
-<!--    }-->
-<!--  });-->
-<!--</script>-->
-<!--</body>-->
-<!--</html>-->
-<!-- signup.html -->
-
-<!-- signup.html -->
 <form id="signupForm">
   <div>
     <label for="username">아이디</label>

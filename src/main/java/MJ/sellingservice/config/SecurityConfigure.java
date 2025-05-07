@@ -43,9 +43,9 @@ public class SecurityConfigure {
                 "/images/**",
                 "/favicon.ico").permitAll()
             .anyRequest().authenticated())
-        .formLogin(Customizer.withDefaults())
+        .formLogin(login -> login.defaultSuccessUrl("/"))
         .logout((logout) -> logout
-            .logoutSuccessUrl("/login?logout")
+            .logoutSuccessUrl("/")
             .invalidateHttpSession(true)
             .deleteCookies("JSESSIONID"))
         .securityContext(securityContext -> securityContext
